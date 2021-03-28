@@ -4,16 +4,19 @@ import 'package:drowsiness_detector/custom_paints/register_painter.dart';
 import 'package:drowsiness_detector/screens/authentication%20screens/login_screen.dart';
 import 'package:drowsiness_detector/screens/report_screen.dart';
 import 'package:drowsiness_detector/screens/welcome_screen.dart';
-import 'package:drowsiness_detector/services/getUid.dart';
+import 'package:drowsiness_detector/services/post_request.dart';
+import 'package:drowsiness_detector/services/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../../constants.dart';
 import '../../widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'authentication_screen.dart';
-
+ User loggedInUser;
 class RegistrationScreen extends StatefulWidget {
   static const id = 'registration_screen';
   @override
@@ -21,18 +24,44 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-
   
-  
-
-  Future getUid() async {
-    final User uid = auth.currentUser;
-    CollectionReference userid = FirebaseFirestore.instance.collection('user');
-    return userid.add({
-      'UserId': uid,
-      }).then((value) => print(uid));
-      
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
   }
+
+  void getCurrentUser() async{
+    try{
+      final user = await FirebaseAuth.instance.currentUser;
+      if(user !=null){
+        loggedInUser = user;
+        print(loggedInUser);
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+  Future getUid() async {
+    // var user = await FirebaseAuth.instance.currentUser;
+    // var uid = user.uid;
+    // UserModel currentUser = new UserModel(uid: uid, email: _email);
+    // FirebaseFirestore.instance.collection('users').doc(uid).set(currentUser.toJson());  
+    FirebaseFirestore.instance.collection('users').add({
+      'Userid': loggedInUser.uid,
+      'Email': loggedInUser.email,
+    });
+  }
+
+  // Future postRequest() async{
+  //   var user = await FirebaseAuth.instance.currentUser;
+  //   var uid = user.uid;
+  //   final Map<String, dynamic> userData = {
+  //     'UserId': uid,
+  //   };
+  //   http.post(Uri.parse('https://dd-authentications-default-rtdb.firebaseio.com/userId.json'), 
+  //   body: json.encode(userData));
+  // }
   
   String _email, _password, _name;
   bool showSpinner = false;
@@ -132,7 +161,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               if(_formKey.currentState.validate()){
                                 try {
                                   final newUser = await auth.createUserWithEmailAndPassword(email: _email, password: _password);
-                                  getUid();
+                                 await getUid();
                                   if(newUser != null){
                                     
                                     Navigator.pushNamed(context, WelcomeScreen.id);

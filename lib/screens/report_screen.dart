@@ -2,6 +2,7 @@ import 'package:drowsiness_detector/constants.dart';
 import 'package:flutter/material.dart';
 import '../widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drowsiness_detector/screens/authentication screens/registration_screen.dart';
 
 class ReportTiles extends StatefulWidget {
   static const id = 'report_screen';

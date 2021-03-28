@@ -5,7 +5,6 @@ import 'package:drowsiness_detector/custom_paints/register_painter.dart';
 import 'package:drowsiness_detector/screens/authentication%20screens/registration_screen.dart';
 import 'package:drowsiness_detector/screens/report_screen.dart';
 import 'package:drowsiness_detector/screens/welcome_screen.dart';
-import 'package:drowsiness_detector/services/getUid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../widgets.dart';
